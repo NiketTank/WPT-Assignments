@@ -1,0 +1,181 @@
+<html>
+
+<head>
+
+    <script>
+        const Array = [{ ArrayNum: 1 }, { ArrayNum: 2 },
+        { ArrayNum: 3 }, { ArrayNum: 4 },
+        { ArrayNum: 5 }, { ArrayNum: 6 },
+        { ArrayNum: 7 }, { ArrayNum: 8 },
+        { ArrayNum: 9 }, { ArrayNum: 10 }];
+        window.addEventListener('DOMContentLoaded', () => {
+
+            const ArrText = document.querySelector("#ArrayText");
+            ArrText.addEventListener('blur', () => {
+                console.log("blur event");
+                let ArrNo = document.querySelector("#ArrayText").value;
+                let output = getNumDetails(ArrNo);
+
+                if (output.result) {
+                    document.querySelector("#Edit").disabled = false;
+                    document.querySelector("#Delete").disabled = false;
+                    document.querySelector("#Message").innerText = "Number found";
+                    document.querySelector("#Addition").disabled = true;
+                    document.querySelector("#ShowAll").disabled = true;
+                    document.querySelector("#OddPosition").disabled = true;
+                }
+
+                else {
+                    document.querySelector("#Addition").disabled = false;
+                    document.querySelector("#Edit").disabled = true;
+                    document.querySelector("#Delete").disabled = true;
+                    document.querySelector("#Message").innerText = "Number not found";
+                    document.querySelector("#ShowAll").disabled = true;
+                    document.querySelector("#OddPosition").disabled = true;
+                    document.querySelector("#Contents").innerText = "";
+                }
+
+            });
+            const Addition = document.querySelector("#Addition");
+            Addition.addEventListener('click', () => {
+                let input = document.querySelector("#ArrayText").value;
+                let output = addNoInArray(input);
+
+                if (output == 1) {
+                    document.querySelector("#Message").innerText = "Number updated successfully";
+                    document.querySelector("#Addition").disabled = true;
+                    document.querySelector("#Edit").disabled = true;
+                    document.querySelector("#Delete").disabled = true;
+                    document.querySelector("#ShowAll").disabled = false;
+                    document.querySelector("#OddPosition").disabled = false;
+                }
+            });
+
+            const deleteNO = document.querySelector("#Delete");
+            deleteNO.addEventListener('click', () => {
+                let input = document.querySelector("#ArrayText").value;
+                let output = deleteNOArray(input);
+
+                if (output == true) {
+                    document.querySelector("#Message").innerText = "Number Deleted ";
+                    document.querySelector("#Addition").disabled = true;
+                    document.querySelector("#Delete").disabled = true;
+                    document.querySelector("#Edit").disabled = true;
+                    document.querySelector("#ShowAll").disabled = false;
+                    document.querySelector("#OddPosition").disabled = false;
+                }
+            });
+            const Edit = document.querySelector("#Edit");
+            Edit.addEventListener('click', () => {
+                let num1 = prompt(" Enter the number to change");
+                let output = getNumDetails(num1);
+                let output2 = getNumDetails(document.querySelector("#ArrayText").value);
+                if (output.result == true) {
+                    document.querySelector("#Message").innerText = "Above Number is already present";
+                    document.querySelector("#Addition").disabled = true;
+                    document.querySelector("#Edit").disabled = true;
+                    document.querySelector("#Delete").disabled = true;
+                    document.querySelector("#ShowAll").disabled = false;
+                    document.querySelector("#OddPosition").disabled = false;
+                }
+
+                else {
+                    console.log(output2.inx);
+                    changeValues(output2.inx, num1);
+                    document.querySelector("#Message").innerText = "Number is updated successfully";
+                    document.querySelector("#Addition").disabled = true;
+                    document.querySelector("#Edit").disabled = true;
+                    document.querySelector("#Delete").disabled = true;
+                    document.querySelector("#ShowAll").disabled = false;
+                    document.querySelector("#OddPosition").disabled = false;
+                }
+            });
+
+            const ShowAll = document.querySelector("#ShowAll");
+            ShowAll.addEventListener('click', () => {
+                displayArray();
+            });
+
+            const OddPosition = document.querySelector("#OddPosition");
+            OddPosition.addEventListener('click', () => {
+                displayOddArray();
+            });
+
+
+            function getNumDetails(num) {
+
+                let output = { result: false, inx: 0 };
+                for (let i = 0; i < Array.length; i++) {
+                    if (Array[i].ArrayNum == num) {
+                        output.result = true;
+                        output.inx = i;
+                        break;
+                    }
+
+                }
+                return output;
+            }
+
+            function addNoInArray(num) {
+                let i = (Array.length - 1);
+                Array[i].ArrayNum = num;
+                return 1;
+            }
+
+            function changeValues(inx, val1) {
+                Array[inx].ArrayNum = val1;
+
+            }
+
+            function displayArray() {
+                let Arrdisplay = Array;
+                let Message = "  ";
+                for (let i = 0; i < Arrdisplay.length; i++)
+                    Message += Arrdisplay[i].ArrayNum + " ";
+                document.querySelector("#Content").innerHTML = Message;
+            }
+
+
+            function displayOddArray() {
+                let Arrdisplay = Array;
+                let Message = " ";
+                for (let i = 0; i < Arrdisplay.length; i++)
+                    if ((i % 2) == 0) {
+                        Message += Arrdisplay[i].ArrayNum + " ";
+                    }
+                document.querySelector("#Content").innerHTML = Message;
+            }
+
+
+            function deleteNOArray(num) {
+                for (let i = 0; i < Array.length; i++) {
+                    if (Array[i].ArrayNum == num) {
+                        Array.splice(i, 1);
+                        break;
+                    }
+
+                }
+                return true;
+            }
+
+        });
+
+    </script>
+    <style>
+    </style>
+</head>
+
+<body>
+    <h2>Predefine Array of Numbers</h2>
+    <hr />
+    <input type="text" id="ArrayText" placeholder="Number"><span id="Message"> Message</span><br>
+    </br><button id="Addition" disabled>Addition a number</button><br>
+    <button id="Delete" disabled>Delete</button><br>
+    <button id="Edit" disabled>Edit</button><br>
+    <button id="ShowAll" disabled>Show All</button><br>
+    <button id="OddPosition" disabled>Show Odd Position</button>
+    </br>
+    <p id="Contents">The Required output is </p>
+</body>
+
+</html>
