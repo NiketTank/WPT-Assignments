@@ -1,0 +1,211 @@
+
+
+<html>
+<head>
+		<script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+<script>
+ const Employee = [
+            { EmpId: 1, Ename: 'Rohit', Email: 'Rohit@gmail.com', DeptId: 1 },
+            { EmpId: 2, Ename: 'Rahul', Email: 'Rahul@gmail.com', DeptId: 2 },
+            { EmpId: 3, Ename: 'Rohan', Email: 'Rohan@gmail.com', DeptId: 2 },
+            { EmpId: 4, Ename: 'Roshan', Email: 'Roshan@gmail.com', DeptId: 1 }];
+
+        window.addEventListener('DOMContentLoaded', () => {
+
+            const EmpId = document.querySelector("#EmpId");
+            EmpId.addEventListener('blur', () => {
+                console.log("blur event");
+                let empno = document.querySelector("#EmpId").value;
+                let output = getEmployeeDetailsLogic(empno);
+
+                if (output.result) {
+                    document.querySelector("#Ename").value = output.Employeedetails.Ename;
+                    document.querySelector("#Email").value = output.Employeedetails.Email;
+                    document.querySelector("#DeptId").value = output.Employeedetails.DeptId;
+
+                    document.querySelector("#Add").disabled = true;
+                    document.querySelector("#Modify").disabled = false;
+                    document.querySelector("#Remove").disabled = false;
+                    document.querySelector("#ViewAll").disabled = true;
+                    document.querySelector("#ViewDept").disabled = true;
+                    document.querySelector("#Message").innerText = "Employee details ";
+                    document.querySelector("#Contents").innerHTML = "Display the details";
+                }
+
+                else {
+                    document.querySelector("#Add").disabled = false;
+                    document.querySelector("#Modify").disabled = true;
+                    document.querySelector("#Remove").disabled = true;
+                    document.querySelector("#ViewAll").disabled = true;
+                    document.querySelector("#ViewDept").disabled = true;
+                    document.querySelector("#Message").innerText = "Details not found";
+                    document.querySelector("#Ename").value = "";
+                    document.querySelector("#Email").value = "";
+                    document.querySelector("#DeptId").value = "";
+                    document.querySelector("#Contents").innerHTML = "Display the details";
+                }
+
+            });
+
+            const ViewAll = document.querySelector("#ViewAll");
+            ViewAll.addEventListener('click', () => {
+                DisplayEmpDetails();
+
+            });
+
+            const Modify = document.querySelector("#Modify");
+            Modify.addEventListener('click', () => {
+
+                let input = {
+                    EmpId: document.querySelector("#EmpId").value,
+                    Ename: document.querySelector("#Ename").value,
+                    Email: document.querySelector("#Email").value,
+                    DeptId: document.querySelector("#DeptId").value
+                };
+
+                let output = modifyEmpDetailsLogic(input);
+                if (output) {
+                    document.querySelector("#Add").disabled = true;
+                    document.querySelector("#Modify").disabled = true;
+                    document.querySelector("#Remove").disabled = true;
+                    document.querySelector("#Message").innerText = "Employee details updated";
+                    document.querySelector("#Ename").value = "";
+                    document.querySelector("#Email").value = "";
+                    document.querySelector("#DeptId").value = "";
+                    document.querySelector("#Contents").innerHTML = "Display the details";
+                }
+
+                else {
+                    document.querySelector("#Add").disabled = true;
+                    document.querySelector("#Modify").disabled = true;
+                    document.querySelector("#Remove").disabled = true;
+                    document.querySelector("#Message").innerText = "Employee details updatation failed";
+                    document.querySelector("#Ename").value = "";
+                    document.querySelector("#Email").value = "";
+                    document.querySelector("#DeptId").value = "";
+                    document.querySelector("#Contents").innerHTML = "Display the details";
+                }
+            });
+
+
+            const Add = document.querySelector("#Add");
+            Add.addEventListener('click', () => {
+
+                let input = {
+                    EmpId: document.querySelector("#EmpId").value,
+                    Ename: document.querySelector("#Ename").value,
+                    Email: document.querySelector("#Email").value,
+                    DeptId: document.querySelector("#DeptId").value
+                };
+
+                let output = addNoInArray(input);
+
+                if (output == 1) {
+                    document.querySelector("#Add").disabled = true;
+                    document.querySelector("#Modify").disabled = true;
+                    document.querySelector("#Remove").disabled = true;
+                    document.querySelector("#ViewAll").disabled = false;
+                    document.querySelector("#ViewDept").disabled = false;
+                    document.querySelector("#Message").innerText = "Employee details Added successfully";
+                    document.querySelector("#Ename").value = "";
+                    document.querySelector("#Email").value = "";
+                    document.querySelector("#DeptId").value = "";
+                    document.querySelector("#Contents").innerHTML = "Display the details";
+
+                }
+            });
+
+
+            const Remove = document.querySelector("#Remove");
+            Remove.addEventListener('click', () => {
+                let output = deleteLogic(document.querySelector("#EmpId").value);
+                document.querySelector("#Add").disabled = true;
+                document.querySelector("#Modify").disabled = true;
+                document.querySelector("#Remove").disabled = true;
+                document.querySelector("#ViewAll").disabled = false;
+                document.querySelector("#ViewDept").disabled = false;
+                document.querySelector("#Message").innerText = "Employee details removed successfully";
+            });
+
+            function getEmployeeDetailsLogic(empnum) {
+                let output = { result: false, Employeedetails: {}, index: 0 };
+                for (let i = 0; i < Employee.length; i++) {
+                    if (Employee[i].EmpId == empnum) {
+                        output.result = true;
+                        output.index = i;
+                        output.Employeedetails = Employee[i];
+                        break;
+                    }
+                }
+                return output;
+            }
+
+            function DisplayEmpDetails() {
+
+                let output = Employee;
+
+                let Message = "";
+                for (let i = 0; i < output.length; i++)
+                    Message += "<Br/>" + output[i].EmpId + " --- " + output[i].Ename +
+                        "--" + output[i].Email + "--" + output[i].DeptId;
+
+                document.querySelector("#Contents").innerHTML = Message;
+            }
+            function deleteLogic(EmpId) {
+                let output = getEmployeeDetailsLogic(EmpId);
+                let i = output.index;
+                Employee.splice(i, 1);
+            }
+
+            function modifyEmpDetailsLogic(updatedemp) {
+                let output = false;
+                for (let i = 0; i < Employee.length; i++) {
+                    {
+
+                        Employee[i].EmpId = updatedemp.EmpId;
+                        Employee[i].Ename = updatedemp.Ename;
+                        Employee[i].Email = updatedemp.Email;
+                        Employee[i].DeptId = updatedemp.DeptId;
+                        output = true;
+                        break;
+                    }
+                }
+                return output;
+            }
+
+
+            function addNoInArray(AddArray) {
+                let i = (Employee.length - 1);
+                Employee[i].EmpId = AddArray.EmpId;
+                Employee[i].Ename = AddArray.Ename;
+                Employee[i].Email = AddArray.Email;
+                Employee[i].DeptId = AddArray.DeptId;
+                return 1;
+            }
+        });
+
+
+    </script>
+    <style>
+    </style>
+</head>
+
+<body>
+    <h2>Employee Details</h2>
+    </hr>
+    <input type="text" id="EmpId" placeholder="Employee Id"><span id="Message">Message</span></br>
+    <input type="text" id="Ename" placeholder="Emp Name"></br>
+    <input type="text" id="Email" placeholder="Email Id"></br>
+    <input type="text" id="DeptId" placeholder="Department Id"></br><br>
+    <button id="Add" disabled> Add</button></br>
+    <button id="Modify" disabled> Modify</button></br>
+    <button id="Remove" disabled> Remove</button></br>
+    <button id="ViewAll" disabled> view all</button></br>
+    <button id="ViewDept" disabled> view on DeptId</button>
+    </hr>
+    <p id="Contents"> Details </p>
+</body>
+</html>
