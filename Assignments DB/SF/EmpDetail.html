@@ -1,0 +1,62 @@
+<html>
+
+<head>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+
+        //console.log('is it working');
+
+        $(() => {
+
+            $("#Empno").blur(
+                () => {
+
+                    //contact server, keep the object ready..
+                    let ip = { Empno: $("#Empno").val() };
+                    let parameterstothefunction =
+                    {
+                        data: ip,
+                        url: "http://localhost:1380/getEmployeeInfo",
+                        type: 'get',
+                        dataType: "json",
+                        success: (datagivenbyserver) => {
+                            console.log("data given by server in success" + datagivenbyserver)
+                            //ok data is coming from server start doing makeup
+                            if (datagivenbyserver.status == true) {
+                                $("#Messsage").text("emp details got");
+                                $("#Empname").val(datagivenbyserver.empdetail.Empname);
+                                $("#MobileNO").val(datagivenbyserver.empdetail.MobileNO);
+
+                            }
+                            else {
+                                $("#Messsage").text("emp details not  got");
+                                $("#Empname").val("");
+                                $("#MobileNO").val("");
+
+                            }
+
+                        },
+                        error: (errorgivenbyserver) => { console.log("failed to contact server " + errorgivenbyserver) }
+                    };
+                    $.ajax(parameterstothefunction);
+
+                }
+            );
+
+        });
+    </script>
+    <style>
+    </style>
+</head>
+
+<Body>
+    <h1> Heading </h1>
+
+    <Br /><input type="text" id="Empno" placeholder="Employee number" />
+    <Br /><input type="text" id="Empname" placeholder="Employee name" />
+    <Br /><input type="text" id="MobileNO" placeholder="Employee Mobile NO" />
+    </form>
+</Body>
+
+</html>

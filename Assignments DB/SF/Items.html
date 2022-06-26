@@ -1,0 +1,169 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <script>
+        $(() => {
+
+            let items = [];
+
+            function showContents() {
+                let parameterstothefunction = {
+                    data: {},
+                    url: "http://localhost:8081/getAllitems",
+                    type: "get",
+                    dataType: "json",
+                    success: (datagivenbyserver) => {
+                        items = datagivenbyserver;
+
+                        let itemscontents = "";
+                        for (let i = 0; i < items.length; i++) {
+                            itemscontents +=
+                                "<br/>" +
+                                items[i].ItemNo +
+                                "  " +
+                                items[i].ItemName +
+                                " " +
+                                items[i].price;
+                        }
+                        $("#Contents").html(itemscontents);
+                    },
+                    error: (err) => {
+                        console.log(" failure  " + err);
+                    },
+                };
+                $.ajax(parameterstothefunction);
+            }
+
+
+
+            $("#ItemNo").blur(() => {
+                let ItemNo = $("#ItemNo").val();
+
+                let parameterstothefunction = {
+                    data: { ItemNo: ItemNo },
+                    url: "http://localhost:8081/getitems",
+                    type: "get",
+                    dataType: "json",
+                    success: (output) => {
+                        console.log("succes " + output.itemnofoundstatus);
+                        document.querySelector("#ItemNo").disabled = true;
+
+                        if (output.itemnofoundstatus) {
+                            $("#Message").text("item details found");
+
+                            $("#ItemName").val(output.itemdetails.ItemName);
+
+                            $("#ItemPrice").val(output.itemdetails.price);
+                        } else {
+                            $("#Message").text("item details not found");
+                            $("#ItemName").val("");
+                            $("#ItemPrice").val("");
+                        }
+                    },
+                    error: (datagivenbyserver) => {
+                        console.log("failure " + datagivenbyserver);
+                    },
+                };
+                $.ajax(parameterstothefunction);
+            });
+
+            $("#Add").click(() => {
+                let input = {
+                    x: $("#ItemNo").val(),
+                    y: $("#ItemName").val(),
+                    z: $("#ItemPrice").val(),
+                };
+
+                let parameterstothefunction = {
+                    data: input,
+                    url: "http://localhost:8081/additems",
+                    type: "get",
+                    dataType: "json",
+                    success: (output) => {
+                        console.log("test the sucess" + output.status);
+
+                        if (output) {
+                            $("#Message").text("added succesfully");
+                            $("#Message").removeClass("nm").addClass("em");
+                        } else {
+                            $("#Message").text("could not Add item");
+                        }
+
+                        $("#ItemName").val("");
+                        $("#ItemPrice").val("");
+
+                        showContents();
+
+                        document.querySelector("#ItemNo").disabled = false;
+                    },
+                    error: (err) => {
+                        console.log("test the sucess" + err);
+                    },
+                };
+
+                $.ajax(parameterstothefunction);
+            });
+
+            $("#Update").click(() => {
+
+                let updatedObject = {
+                    x: $("#ItemNo").val(),
+                    y: $("#ItemName").val(),
+                    z: $("#ItemPrice").val(),
+                };
+                let parameterstothefunction = {
+                    data: updatedObject,
+                    url: "http://localhost:8081/updateitems",
+                    type: "get",
+                    dataType: "json",
+                    success: (output) => {
+                        console.log("test the sucess" + output);
+
+                        if (output.status) {
+                            $("#Message").text("updated successfully");
+                            $("#Message").removeClass("em").addClass("nm");
+                        } else {
+                            $("#Message").text("could not Update item");
+                        }
+                        $("#ItemName").val("");
+                        $("#ItemPrice").val("");
+                    },
+                    error: (err) => {
+                        console.log("test the failure" + err);
+                    },
+                };
+                $.ajax(parameterstothefunction);
+
+                showContents();
+            });
+
+            showContents();
+        });
+    </script>
+    <style>
+        .em {
+            color: yellow;
+        }
+
+        .nm {
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <br />
+    <input type="text" id="ItemNo" placeholder="Item number" />
+    <br />
+    <input type="text" id="ItemName" placeholder="Item name" />
+    <br />
+    <input type="text" id="ItemPrice" placeholder="Item price" />
+    <br /><br /><button id="Add">Add Item</button>
+    <button id="Update">Update Item</button>
+    <hr />
+    <p id="Contents">Display Here</p>
+</body>
+
+</html>

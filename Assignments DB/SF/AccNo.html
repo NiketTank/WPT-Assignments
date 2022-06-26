@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bank Balnce status</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        $(() => {
+            console.log("content is loaded");
+
+            $("#accno").blur(() => {
+                console.log("blur event is working");
+                let accnum = { acc: $("#accno").val() };
+                let parametertoserver = {
+                    data: accnum,
+                    url: "http://localhost:1230/acc",
+                    type: "get",
+                    datatype: "json",
+                    success: (datagivenbyserver) => {
+                        console.log(datagivenbyserver.status + "  success");
+                        $("#Message").html(datagivenbyserver.accbalce);
+                    },
+                    error: (datagivenbyserver) => {
+                        console.log(datagivenbyserver);
+                        $("#Message").html("");
+                    },
+                };
+                $.ajax(parametertoserver);
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h2>Account details</h2>
+    <input type="text" id="Accno" placeholder="Account number" /><span id="Message"></span>
+</body>
+
+</html>
